@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :set_message, only: [:show, :edit, :update, :destroy]
   def index
-    @tasks = Task.all
+    @tasks = Task.order(created_at: :desc).page(params[:page]).per(10)
   end
   
   def show
@@ -42,19 +42,15 @@ class TasksController < ApplicationController
     flash[:success] = 'Taskは正常に削除されました'
     redirect_to tasks_url
   end
-      
- 
-end
 
-
-private 
-
-#Strong Parameter
-
-def set_message
-  @task =Task.find(params[:id])
-end
-
-def task_params
-  params.require(:task).permit(:status,:content)
+  private 
+  #Strong Parameter
+  
+  def set_message
+    @task =Task.find(params[:id])
+  end
+  
+  def task_params
+    params.require(:task).permit(:status,:content)
+  end
 end
